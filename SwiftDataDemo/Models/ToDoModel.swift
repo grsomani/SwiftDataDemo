@@ -12,10 +12,10 @@ import SwiftData
 class ToDoData {
     var title: String
     var createdDate: Date
-    var lastEditedDate: String?
+    var lastEditedDate: Date
     var list: [ToDoTask]?
     
-    init(title: String, createdDate: Date, lastEditedDate: String? = nil, list: [ToDoTask]?) {
+    init(title: String, createdDate: Date = Date(), lastEditedDate: Date = Date(), list: [ToDoTask]?) {
         self.title = title
         self.createdDate = createdDate
         self.lastEditedDate = lastEditedDate

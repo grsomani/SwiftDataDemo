@@ -1,14 +1,17 @@
 //
-//  ViewController.swift
+//  HomeViewController.swift
 //  SwiftDataDemo
 //
 //  Created by Ganesh Somani on 28/10/23.
 //
 
 import UIKit
+import SwiftData
 
-class ViewController: UIViewController {
+class HomeViewController: UIViewController {
 
+    private var modelContainer: ModelContainer?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
@@ -28,8 +31,15 @@ class ViewController: UIViewController {
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         let createAction = UIAlertAction(title: "Create", style: .default) { _ in
-            // create new model here
-            // navigate to new screen for list creation
+            let modelConfig = ModelConfiguration()
+            do {
+                self.modelContainer = try ModelContainer(for: ToDoData.self, configurations: modelConfig)
+            } catch {
+                fatalError("Could not initialize ModelContainer")
+            }
+            let newListData = ToDoData(title: alertController.textFields?.first?.text ?? "New List", list: [])
+            guard let listVC = ListViewController.instantiateToDoList(newListData) else { return }
+            self.navigationController?.pushViewController(listVC, animated: true)
         }
         alertController.addAction(cancelAction)
         alertController.addAction(createAction)
