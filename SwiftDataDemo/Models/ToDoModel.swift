@@ -13,9 +13,9 @@ class ToDoData {
     var title: String
     var createdDate: Date
     var lastEditedDate: Date
-    var list: [ToDoTask]?
+    @Relationship(deleteRule: .cascade) var list: [ToDoTask]
     
-    init(title: String, createdDate: Date = Date(), lastEditedDate: Date = Date(), list: [ToDoTask]?) {
+    init(title: String, createdDate: Date = Date(), lastEditedDate: Date = Date(), list: [ToDoTask] = []) {
         self.title = title
         self.createdDate = createdDate
         self.lastEditedDate = lastEditedDate

@@ -10,11 +10,15 @@ import SwiftData
 
 class HomeViewController: UIViewController {
 
-    private var modelContainer: ModelContainer?
+    @IBOutlet private weak var todoListTable: UITableView!
+    private var toDoList = [ToDoData]()
+    private let dbManager = DatabaseManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
+        todoListTable.register(UITableViewCell.self, forCellReuseIdentifier: "toDoList")
+        self.toDoList = dbManager.fetchToDoList() ?? []
     }
 
     private func setupNavigationBar() {
@@ -31,19 +35,28 @@ class HomeViewController: UIViewController {
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         let createAction = UIAlertAction(title: "Create", style: .default) { _ in
-            let modelConfig = ModelConfiguration()
-            do {
-                self.modelContainer = try ModelContainer(for: ToDoData.self, configurations: modelConfig)
-            } catch {
-                fatalError("Could not initialize ModelContainer")
-            }
-            let newListData = ToDoData(title: alertController.textFields?.first?.text ?? "New List", list: [])
+            let newListData = DatabaseManager().createToDoList(title: alertController.textFields?.first?.text ?? "New List")
             guard let listVC = ListViewController.instantiateToDoList(newListData) else { return }
             self.navigationController?.pushViewController(listVC, animated: true)
         }
         alertController.addAction(cancelAction)
         alertController.addAction(createAction)
         self.navigationController?.present(alertController, animated: true)
+    }
+}
+
+extension HomeViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        toDoList.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "toDoList") else {
+            return UITableViewCell()
+        }
+        cell.textLabel?.text = toDoList[indexPath.row].title
+        cell.selectionStyle = .none
+        return cell
     }
 }
 

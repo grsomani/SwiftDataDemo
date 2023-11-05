@@ -18,8 +18,6 @@ class ListViewController: UIViewController {
         guard let listVC = storyboard.instantiateViewController(withIdentifier: "toDoListVC") as? ListViewController else {
             return nil
         }
-        let modelConfig = ModelConfiguration()
-        listVC.modelContainer = try? ModelContainer(for: ToDoData.self, configurations: modelConfig)
         listVC.toDoList = toDoList
         return listVC
     }
